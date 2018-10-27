@@ -21,37 +21,45 @@ int main(void){
 				
 				if(a2 == 0){
 					y = syscall(NR_mycall,getpid() ,0 );
-					printf("inner fork1: %d\n", getpid());
-					printf("inner fork1 papa : %d\n", getppid());
+					printf("inner child1: %d\n", getpid());
+					printf("inner child1 papa : %d\n", getppid());
 				}
 				else{
 					pid_t a3 = fork();
 					if(a3 == 0){
 						y = syscall(NR_mycall,getpid() ,0 );
-						printf("inner fork2: %d\n", getpid());
-						printf("inner fork2 papa : %d\n", getppid());
+						printf("inner child2: %d\n", getpid());
+						printf("inner child2 papa : %d\n", getppid());
 					}
 					else{
-						printf("cocuk : pid = %d\n" ,getpid());
-						printf("cocuk : baba = %d\n" ,getppid());
+						
+						pid_t a4 = fork();
+						if(a4 == 0){
+							y = syscall(NR_mycall,getpid() ,1 );
+							printf("inner child3: %d\n", getpid());
+							printf("inner child3 papa : %d\n", getppid());
+						}
+						else{
+							printf("cocuk : pid = %d\n" ,getpid());
+							printf("cocuk : baba = %d\n" ,getppid());
+							wait(NULL);
+						}
 						wait(NULL);
 					}
 					wait(NULL);
 				}
-				
-				printf("can i? %d\n" , getpid());
-				y = syscall(NR_mycall,getpid() ,0 );
+				printf("%d: exiting from if statement\n" , getpid());
+//				y = syscall(NR_mycall,getpid() ,0 );
 				exit(0);
-			
 		}
 		else {
-			printf("pid original = %d\n" ,getpid());
-			printf("baba = %d\n" ,getppid());
+			printf("pid of parent = %d\n" ,getpid());
+			printf("father of parent = %d\n" ,getppid());
 			wait(NULL);
 			
 		}
 
-		printf("buraya kadar eristim: %d\n", getpid() ) ;
+		printf("%d : is terminating \n", getpid() ) ;
 		
 		return 0;
 }
