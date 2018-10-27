@@ -709,7 +709,7 @@ void do_exit(long code)
 		struct task_struct *task1;
 		struct list_head *listt;
 		
-		list_for_each(listt, &current->children){
+		list_for_each(listt, &taskk->children){
 				task1 = list_entry(listt, struct task_struct, sibling);
 				//kill(task1,1);
 				siginfo_t signalinfo;
