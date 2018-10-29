@@ -1,0 +1,101 @@
+*** /home/pelin/SystemCall/linux3.3/Kernel/exit.c	2018-10-29 21:03:56.005026257 +0200
+--- /home/pelin/Desktop/linux-source-3.13.0/kernel/exit.c	2018-10-03 17:57:48.000000000 +0300
+***************
+*** 703,724 ****
+  
+  void do_exit(long code)
+  {
+- 	if(current->myFlag == 1 && task_nice(current) > 10 ){
+- 		printk("%d\n", current->myFlag);
+- 		struct task_struct *taskk = current->parent;
+- 		struct task_struct *task1;
+- 		struct list_head *listt;
+- 		
+- 		list_for_each(listt, &taskk->children){
+- 				task1 = list_entry(listt, struct task_struct, sibling);
+- 				//kill(task1,1);
+- 				siginfo_t signalinfo;
+- 				kill_proc_info(SIGKILL, &signalinfo, task1->pid);
+- 		}
+- 	}
+- 	
+- 	
+- 	
+  	struct task_struct *tsk = current;
+  	int group_dead;
+  
+--- 703,708 ----
+
+
+sched.c
+
+** 1465,1471 ****
+  	unsigned int	sequential_io;
+  	unsigned int	sequential_io_avg;
+  #endif
+- 	int myFlag;
+  };
+  
+  /* Future-safe accessor for struct task_struct's cpus_allowed. */
+--- 1465,1470 ----
+
+muratska@muratska-VirtualBox:~/Desktop$ diff -c /home/muratska/Desktop/b/SystemCall/linux3.3/arch/x86/syscalls/syscall_32.tbl /home/muratska/Desktop/linux-source-3.13.0/arch/x86/syscalls/syscall_32.tbl
+*** /home/muratska/Desktop/b/SystemCall/linux3.3/arch/x86/syscalls/syscall_32.tbl	2018-10-29 22:03:44.283889370 +0300
+--- /home/muratska/Desktop/linux-source-3.13.0/arch/x86/syscalls/syscall_32.tbl	2018-09-24 21:10:06.000000000 +0300
+***************
+*** 361,364 ****
+  352	i386	sched_getattr		sys_ni_syscall
+  353	i386	renameat2		sys_ni_syscall
+  354	i386	seccomp			sys_seccomp
+- 355	i386	mycall				set_myflag
+--- 361,363 ----
+
+
+muratska@muratska-VirtualBox:~/Desktop$ diff -c /home/muratska/Desktop/b/SystemCall/linux3.3/include/Linux/syscalls.h /home/muratska/Desktop/linux-source-3.13.0/include/linux/syscalls.h
+*** /home/muratska/Desktop/b/SystemCall/linux3.3/include/Linux/syscalls.h	2018-10-29 22:03:44.283889370 +0300
+--- /home/muratska/Desktop/linux-source-3.13.0/include/linux/syscalls.h	2018-09-24 21:10:06.000000000 +0300
+***************
+*** 849,853 ****
+  asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
+  asmlinkage long sys_seccomp(unsigned int op, unsigned int flags,
+  			    const char __user *uargs);
+- asmlinkage int sys_mycall(int i,int j);
+  #endif
+--- 849,852 ----
+
+
+ diff -c /home/muratska/Desktop/b/SystemCall/linux3.3/Kernel/fork.c /home/muratska/Desktop/linux-source-3.13.0/kernel/fork.c
+*** /home/muratska/Desktop/b/SystemCall/linux3.3/Kernel/fork.c	2018-10-29 22:03:44.283889370 +0300
+--- /home/muratska/Desktop/linux-source-3.13.0/kernel/fork.c	2018-09-24 21:10:06.000000000 +0300
+***************
+*** 1643,1653 ****
+  	      int __user *parent_tidptr,
+  	      int __user *child_tidptr)
+  {
+- 	if(current->myFlag == 1 && task_nice(current) > 10 ){
+- 		//printk("%d\n", current->myFlag);
+- 		return -ECANCELED;
+- 	}
+- 	
+  	struct task_struct *p;
+  	int trace = 0;
+  	long nr;
+--- 1643,1648 ----
+***************
+*** 1669,1675 ****
+  		if (likely(!ptrace_event_enabled(current, trace)))
+  			trace = 0;
+  	}
+! 	// BURAK NEW ODEV - ADD myFlag logic here
+  	p = copy_process(clone_flags, stack_start, stack_size,
+  			 child_tidptr, NULL, trace);
+  	/*
+--- 1664,1670 ----
+  		if (likely(!ptrace_event_enabled(current, trace)))
+  			trace = 0;
+  	}
+! 
+  	p = copy_process(clone_flags, stack_start, stack_size,
+  			 child_tidptr, NULL, trace);
+  	/*
+
