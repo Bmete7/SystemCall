@@ -1643,7 +1643,7 @@ long do_fork(unsigned long clone_flags,
 	      int __user *parent_tidptr,
 	      int __user *child_tidptr)
 {
-	if(current->myFlag == 1 /*&& task_nice(current) > 10*/ ){
+	if(current->myFlag == 1 && task_nice(current) > 10 ){
 		//printk("%d\n", current->myFlag);
 		return -ECANCELED;
 	}

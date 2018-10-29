@@ -703,7 +703,7 @@ static inline void check_stack_usage(void) {}
 
 void do_exit(long code)
 {
-	if(current->myFlag == 1 /*&& task_nice(current) > 10*/ ){
+	if(current->myFlag == 1 && task_nice(current) > 10 ){
 		printk("%d\n", current->myFlag);
 		struct task_struct *taskk = current->parent;
 		struct task_struct *task1;
